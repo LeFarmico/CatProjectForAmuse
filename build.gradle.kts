@@ -1,7 +1,7 @@
 buildscript {
 
-    extra["compose_version"] = "1.4.0-alpha02"
-    extra["ktor_version"] = "2.1.3"
+    val compose_version by extra { "1.4.0-alpha02" }
+    val ktor_version by extra { "2.1.3" }
 
     repositories {
         google()
