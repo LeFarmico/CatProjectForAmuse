@@ -72,8 +72,8 @@ dependencies {
 
     // Ktor
     implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$$ktor_version")
-    implementation("io.ktor:ktor-client-content-negotiation:$$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.coil-kt:coil-compose:2.2.2")
 }
