@@ -45,3 +45,11 @@ object Versions {
     const val ktor_version = "2.1.3"
     const val coil_version = "2.2.2"
 }
+
+object Config {
+    const val appId = "io.amuse.codeassignment"
+    const val minSdk = 21
+    const val targetSdk = 33
+    const val versionCode = 1
+    const val versionName = "1.0"
+}

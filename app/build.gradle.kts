@@ -8,11 +8,11 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "io.amuse.codeassignment"
-        minSdk = 21
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = Config.appId
+        minSdk = Config.minSdk
+        targetSdk = Config.targetSdk
+        versionCode = Config.versionCode
+        versionName = Config.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
