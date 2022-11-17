@@ -10,6 +10,9 @@ buildscript {
         classpath(BuildPlugins.kotlinSerialization)
     }
 }
+plugins {
+    id("com.google.dagger.hilt.android") version "2.44" apply false
+}
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)

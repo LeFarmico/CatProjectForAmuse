@@ -9,10 +9,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import io.amuse.codeassignment.viewmodel.CatsViewModel
 
 @Composable
-fun CatsScreen(viewModel: CatsViewModel = CatsViewModel()) {
+fun CatsScreen(
+    viewModel: CatsViewModel = hiltViewModel()
+) {
     val catsState by viewModel.getCats().collectAsState()
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {

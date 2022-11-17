@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -44,7 +46,11 @@ android {
     }
     packagingOptions {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+        resources.excludes.add("META-INF/gradle/incremental.annotation.processors")
     }
+}
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
@@ -75,4 +81,9 @@ dependencies {
 
     // Coil
     implementation(Deps.coil)
+
+    // Dagger Hilt
+    implementation(Deps.hilt)
+    kapt(Deps.hiltCompiler)
+    implementation(Deps.hiltCompose)
 }

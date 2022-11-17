@@ -1,5 +1,6 @@
 import Versions.coil_version
 import Versions.compose_version
+import Versions.hilt_version
 import Versions.ktor_version
 
 object BuildPlugins {
@@ -38,12 +39,18 @@ object Deps {
 
     // Coil
     const val coil = "io.coil-kt:coil-compose:$coil_version"
+
+    // Dagger Hilt
+    const val hilt = "com.google.dagger:hilt-android:$hilt_version"
+    const val hiltCompiler = "com.google.dagger:hilt-android-compiler:$hilt_version"
+    const val hiltCompose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
 
 object Versions {
     const val compose_version = "1.4.0-alpha02"
     const val ktor_version = "2.1.3"
     const val coil_version = "2.2.2"
+    const val hilt_version = "2.43"
 }
 
 object Config {
