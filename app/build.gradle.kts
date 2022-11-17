@@ -1,6 +1,3 @@
-val compose_version: String by rootProject.extra
-val ktor_version: String by rootProject.extra
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -43,7 +40,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = compose_version
+        kotlinCompilerExtensionVersion = Versions.compose_version
     }
     packagingOptions {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
