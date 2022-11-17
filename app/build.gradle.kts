@@ -53,27 +53,29 @@ android {
 dependencies {
 
     // Core
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.1")
+    implementation(Deps.core)
+    implementation(Deps.lifecycle)
+    implementation(Deps.activityCompose)
 
     // Compose
-    implementation("androidx.compose.ui:ui:$compose_version")
-    implementation("androidx.compose.material:material:$compose_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+    implementation(Deps.composeUI)
+    implementation(Deps.composeMaterial)
+    implementation(Deps.composeToolingPreview)
+    debugImplementation(Deps.composeUITooling)
+    debugImplementation(Deps.composeUITestManifest)
 
     // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    testImplementation(Deps.junit)
+    androidTestImplementation(Deps.junitExt)
+    androidTestImplementation(Deps.espresso)
+    androidTestImplementation(Deps.composeUITestJunit)
 
     // Ktor
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation(Deps.ktorClientCore)
+    implementation(Deps.ktorClientCio)
+    implementation(Deps.ktorSerialization)
+    implementation(Deps.ktorClientContentNegotiation)
+
+    // Coil
+    implementation(Deps.coil)
 }
