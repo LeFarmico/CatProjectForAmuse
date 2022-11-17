@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "CodeAssignment"
-include ':app'
+include(":app")
