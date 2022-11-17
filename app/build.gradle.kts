@@ -85,4 +85,5 @@ dependencies {
     // Dagger Hilt
     implementation(Deps.hilt)
     implementation(Deps.hiltCompiler)
+    implementation(Deps.hiltCompose)
 }
