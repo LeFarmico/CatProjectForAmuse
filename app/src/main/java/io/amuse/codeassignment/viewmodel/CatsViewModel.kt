@@ -2,6 +2,7 @@ package io.amuse.codeassignment.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.amuse.codeassignment.domain.model.Cat
 import io.amuse.codeassignment.repository.CatsRepository
 import io.amuse.codeassignment.ui.DataUIStateWrapper
@@ -9,9 +10,14 @@ import io.amuse.codeassignment.ui.UIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import javax.inject.Inject
 
-class CatsViewModel(private val catsRepository: CatsRepository = CatsRepository()) : ViewModel() {
-     fun getCats(): StateFlow<DataUIStateWrapper<List<Cat>>> = channelFlow {
+@HiltViewModel
+class CatsViewModel @Inject constructor(
+    private val catsRepository: CatsRepository
+) : ViewModel() {
+
+    fun getCats(): StateFlow<DataUIStateWrapper<List<Cat>>> = channelFlow {
         trySend(DataUIStateWrapper(emptyList<Cat>(), UIState.Loading))
         catsRepository.fetchCats().cancellable()
             .catch {
