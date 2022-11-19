@@ -37,18 +37,16 @@ class DomainModule {
             )
         }
         install(Logging) {
+            level = LogLevel.ALL
             logger = object : Logger {
                 override fun log(message: String) {
                     Log.v("Logger Ktor =>", message)
                 }
             }
-            level = LogLevel.ALL
         }
         HttpResponseValidator {
             validateResponse { response: HttpResponse ->
                 val statusCode = response.status.value
-
-                println("HTTP status: $statusCode")
 
                 when (statusCode) {
                     in 300..399 -> throw RedirectResponseException(response, NO_RESPONSE_TEXT)

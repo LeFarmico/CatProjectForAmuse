@@ -8,7 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import io.amuse.codeassignment.domain.model.Cat
+import io.amuse.codeassignment.domain.model.CatModel
 import io.amuse.codeassignment.viewmodel.CatsViewModel
 
 @Composable
@@ -23,11 +23,11 @@ fun CatsScreen(
         DataState.Loading -> {
         }
         is DataState.Success -> {
-            val catsList = (state as DataState.Success<List<Cat>>).data
+            val catsList = (state as DataState.Success<List<CatModel>>).data
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(catsList) { index, item ->
                     val color = Color.Black
-                    CatItem(modifier = Modifier.background(color), cat = item)
+                    CatItem(modifier = Modifier.background(color), catModel = item)
                 }
             }
         }
