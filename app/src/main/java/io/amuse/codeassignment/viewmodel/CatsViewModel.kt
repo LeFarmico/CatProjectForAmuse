@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.amuse.codeassignment.domain.model.Cat
-import io.amuse.codeassignment.repository.CatsRepository
+import io.amuse.codeassignment.repository.api.CatsRepository
 import io.amuse.codeassignment.ui.DataUIStateWrapper
 import io.amuse.codeassignment.ui.UIState
 import kotlinx.coroutines.Dispatchers
