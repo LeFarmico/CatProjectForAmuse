@@ -2,21 +2,28 @@ package io.amuse.codeassignment.repository.impl
 
 import io.amuse.codeassignment.domain.api.CatsApi
 import io.amuse.codeassignment.domain.model.Cat
+import io.amuse.codeassignment.domain.model.NetworkResponse
 import io.amuse.codeassignment.repository.api.CatsRepository
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class CatsRepositoryImpl @Inject constructor(
     private val api: CatsApi
 ) : CatsRepository {
 
-    override suspend fun fetchCats(): Flow<List<Cat>> = channelFlow {
+    override suspend fun fetchCats(
+        onStart: () -> Unit,
+        onError: (String?) -> Unit
+    ): Flow<List<Cat>> = channelFlow {
+        val scope = CoroutineScope(Dispatchers.IO + Job())
         val cats = (0..50).map {
-            async {
-                api.getCat()
+            scope.async {
+                when (val catResponse = api.getCat()) {
+                    is NetworkResponse.Error -> throw (catResponse.throwable) // handle API request errors
+                    is NetworkResponse.Exception -> throw (catResponse.throwable) // handle user errors
+                    is NetworkResponse.Success -> catResponse.data
+                }
             }
         }.toTypedArray()
 
@@ -24,4 +31,6 @@ class CatsRepositoryImpl @Inject constructor(
         val response = awaitAll(*cats)
         trySend(response)
     }
+        .onStart { onStart() }
+        .catch { onError(it.message) }
 }

@@ -5,5 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface CatsRepository {
 
-    suspend fun fetchCats(): Flow<List<Cat>>
+    suspend fun fetchCats(
+        onStart: () -> Unit,
+        onError: (String?) -> Unit
+    ): Flow<List<Cat>>
 }
