@@ -50,7 +50,7 @@ object Versions {
     const val compose_version = "1.4.0-alpha02"
     const val ktor_version = "2.1.3"
     const val coil_version = "2.2.2"
-    const val hilt_version = "2.43"
+    const val hilt_version = "2.44"
 }
 
 object Config {

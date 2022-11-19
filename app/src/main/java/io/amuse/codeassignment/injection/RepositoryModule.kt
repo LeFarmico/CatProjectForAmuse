@@ -1,18 +1,18 @@
 package io.amuse.codeassignment.injection
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.amuse.codeassignment.domain.api.CatsApi
-import io.amuse.codeassignment.repository.CatsRepository
+import io.amuse.codeassignment.repository.api.CatsRepository
+import io.amuse.codeassignment.repository.impl.CatsRepositoryImpl
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RepositoryModule {
+abstract class RepositoryModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideCatsRepository(api: CatsApi) = CatsRepository(api)
+    abstract fun bindCatsRepository(catsRepositoryImpl: CatsRepositoryImpl): CatsRepository
 }
