@@ -36,6 +36,7 @@ object Deps {
     const val ktorClientCio = "io.ktor:ktor-client-cio:$ktor_version"
     const val ktorSerialization = "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
     const val ktorClientContentNegotiation = "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    const val ktorClientLogging = "io.ktor:ktor-client-logging-jvm:$ktor_version"
 
     // Coil
     const val coil = "io.coil-kt:coil-compose:$coil_version"

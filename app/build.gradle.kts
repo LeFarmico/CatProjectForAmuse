@@ -78,6 +78,7 @@ dependencies {
     implementation(Deps.ktorClientCio)
     implementation(Deps.ktorSerialization)
     implementation(Deps.ktorClientContentNegotiation)
+    implementation(Deps.ktorClientLogging)
 
     // Coil
     implementation(Deps.coil)
