@@ -1,10 +1,13 @@
 package io.amuse.codeassignment.injection
 
+import android.content.Context
 import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.amuse.codeassignment.R
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
@@ -21,7 +24,9 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient() = HttpClient(CIO) {
+    fun provideHttpClient(
+        @ApplicationContext context: Context
+    ) = HttpClient(CIO) {
         engine {
             requestTimeout = 5000
             endpoint.connectTimeout = 1000
@@ -48,14 +53,21 @@ class DomainModule {
             validateResponse { response: HttpResponse ->
                 val statusCode = response.status.value
 
+                val exceptionMessage = when (statusCode) {
+                    in 300..399 -> context.getString(R.string.redirect_response)
+                    in 400..499 -> context.getString(R.string.client_request_error)
+                    in 500..599 -> context.getString(R.string.server_request_error)
+                    else -> context.getString(R.string.default_error)
+                }
+
                 when (statusCode) {
-                    in 300..399 -> throw RedirectResponseException(response, NO_RESPONSE_TEXT)
-                    in 400..499 -> throw ClientRequestException(response, NO_RESPONSE_TEXT)
-                    in 500..599 -> throw ServerResponseException(response, NO_RESPONSE_TEXT)
+                    in 300..399 -> throw RedirectResponseException(response, exceptionMessage)
+                    in 400..499 -> throw ClientRequestException(response, exceptionMessage)
+                    in 500..599 -> throw ServerResponseException(response, exceptionMessage)
                 }
 
                 if (statusCode >= 600) {
-                    throw ResponseException(response, NO_RESPONSE_TEXT)
+                    throw ResponseException(response, exceptionMessage)
                 }
             }
 
@@ -63,9 +75,5 @@ class DomainModule {
                 throw cause
             }
         }
-    }
-
-    companion object {
-        private const val NO_RESPONSE_TEXT: String = "<no response text provided>"
     }
 }

@@ -5,5 +5,5 @@ import io.amuse.codeassignment.domain.model.NetworkResponse
 
 interface CatsApi {
 
-    suspend fun getCat(): NetworkResponse<CatModel>
+    suspend fun getJpegCat(): NetworkResponse<CatModel>
 }
