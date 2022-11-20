@@ -12,6 +12,12 @@ import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class CatScreenState(
+    val catsList: List<CatViewDataModel> = emptyList(),
+    val catsCount: Int? = null,
+    val loadedCatsCount: Int? = null
+)
+
 @HiltViewModel
 class CatsViewModel @Inject constructor(
     private val catsRepository: CatsRepository
@@ -21,7 +27,7 @@ class CatsViewModel @Inject constructor(
         getCats()
     }
 
-    private val _state: MutableStateFlow<DataState<List<CatViewDataModel>>> = MutableStateFlow(DataState.Loading)
+    private val _state: MutableStateFlow<DataState<CatScreenState>> = MutableStateFlow(DataState.Loading)
     val state = _state.stateIn(
         viewModelScope,
         WhileSubscribed(500),
@@ -36,8 +42,30 @@ class CatsViewModel @Inject constructor(
             )
                 .flowOn(Dispatchers.IO)
                 .collectLatest {
-                    _state.value = DataState.Success(it)
+                    // sequential request after collecting cats
+                    val catsCount = getCatsCount()
+
+                    _state.value = DataState.Success(
+                        getCatScreenState().copy(
+                            catsList = it,
+                            catsCount = catsCount,
+                            loadedCatsCount = it.size
+                        )
+                    )
                 }
         }
+    }
+
+    // can't make concurrent request because of crash application (unexpected NPE)
+    private suspend fun getCatsCount(): Int {
+        return catsRepository.fetchCatsCount()
+            .flowOn(Dispatchers.IO)
+            .first()
+    }
+
+    // getting current success state if exist, if not creating a new one
+    private fun getCatScreenState(): CatScreenState = when (_state.value) {
+        is DataState.Success -> (_state.value as DataState.Success<CatScreenState>).data
+        else -> CatScreenState()
     }
 }
