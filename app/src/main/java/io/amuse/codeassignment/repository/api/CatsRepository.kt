@@ -1,6 +1,6 @@
 package io.amuse.codeassignment.repository.api
 
-import io.amuse.codeassignment.domain.model.CatModel
+import io.amuse.codeassignment.repository.model.CatViewDataModel
 import kotlinx.coroutines.flow.Flow
 
 interface CatsRepository {
@@ -8,5 +8,5 @@ interface CatsRepository {
     suspend fun fetchCats(
         onStart: () -> Unit,
         onError: (String?) -> Unit
-    ): Flow<List<CatModel>>
+    ): Flow<List<CatViewDataModel>>
 }
