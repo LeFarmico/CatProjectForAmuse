@@ -2,6 +2,7 @@ package io.amuse.codeassignment.domain.impl
 
 import io.amuse.codeassignment.domain.CatsURL
 import io.amuse.codeassignment.domain.api.CatsApi
+import io.amuse.codeassignment.domain.model.CatCountModel
 import io.amuse.codeassignment.domain.model.CatModel
 import io.amuse.codeassignment.domain.model.NetworkResponse
 import io.ktor.client.*
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class CatsApiImpl @Inject constructor(private val client: HttpClient) : CatsApi {
 
     override suspend fun getJpegCat(): NetworkResponse<CatModel> {
-        val timeout: Long = 5_000
+        val timeout: Long = 10_000
         return try {
             // stopping of recursion in case of impossibility to find correct mimetype
             withTimeout(timeout) {
@@ -43,6 +44,22 @@ class CatsApiImpl @Inject constructor(private val client: HttpClient) : CatsApi 
                     "Cats with mimetype: image/jpeg haven't found for $timeout millis"
                 )
             )
+        }
+    }
+
+    override suspend fun getCatsCount(): NetworkResponse<CatCountModel> {
+        return try {
+            val response = client.get(CatsURL.URL + "/api/count")
+            val catsCount = response.body() as CatCountModel
+            NetworkResponse.Success(catsCount)
+        } catch (e: ResponseException) {
+            NetworkResponse.Error(
+                code = e.response.status.value,
+                message = e.message,
+                throwable = e
+            )
+        } catch (e: UnresolvedAddressException) {
+            NetworkResponse.Exception(e)
         }
     }
 }
