@@ -9,4 +9,6 @@ interface CatsRepository {
         onStart: () -> Unit,
         onError: (String?) -> Unit
     ): Flow<List<CatViewDataModel>>
+
+    suspend fun fetchCatsCount(): Flow<Int>
 }

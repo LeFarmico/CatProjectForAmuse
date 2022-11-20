@@ -19,10 +19,10 @@ class CatsRepositoryImpl @Inject constructor(
     ): Flow<List<CatViewDataModel>> = channelFlow {
         val cats = (0..50).map {
             async {
-                when (val catResponse = api.getJpegCat()) {
-                    is NetworkResponse.Error -> throw (catResponse.throwable) // handle API request errors
-                    is NetworkResponse.Exception -> throw (catResponse.throwable) // handle user errors
-                    is NetworkResponse.Success -> catResponse.data.toViewData() // map model to viewData
+                when (val networkResponse = api.getJpegCat()) {
+                    is NetworkResponse.Error -> throw (networkResponse.throwable) // handle API request errors
+                    is NetworkResponse.Exception -> throw (networkResponse.throwable) // handle user errors
+                    is NetworkResponse.Success -> networkResponse.data.toViewData() // map model to viewData
                 }
             }
         }.toTypedArray()
@@ -32,7 +32,18 @@ class CatsRepositoryImpl @Inject constructor(
         trySend(response)
     }
         .onStart { onStart() }
-        .catch { onError(it.message) }
+        .catch {
+            it.printStackTrace()
+            onError(it.message)
+        }
+
+    override suspend fun fetchCatsCount(): Flow<Int> = channelFlow {
+        when (val networkResponse = api.getCatsCount()) {
+            is NetworkResponse.Error -> throw (networkResponse.throwable) // handle API request errors
+            is NetworkResponse.Exception -> throw (networkResponse.throwable) // handle user errors
+            is NetworkResponse.Success -> trySend(networkResponse.data.count)
+        }
+    }
 
     private fun String.dateTimeToViewData(): String? {
         return try {
