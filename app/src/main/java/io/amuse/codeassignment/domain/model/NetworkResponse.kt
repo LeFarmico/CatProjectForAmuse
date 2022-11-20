@@ -3,7 +3,7 @@ package io.amuse.codeassignment.domain.model
 sealed interface NetworkResponse<T : Any> {
 
     data class Success<T : Any>(val data: T) : NetworkResponse<T>
-    data class Error<T : Any>(val code: Int, val message: String, val throwable: Throwable) : NetworkResponse<T>
+    data class Error<T : Any>(val code: Int, val message: String?, val throwable: Throwable) : NetworkResponse<T>
     data class Exception<T : Any>(val throwable: Throwable) : NetworkResponse<T>
 }
 
