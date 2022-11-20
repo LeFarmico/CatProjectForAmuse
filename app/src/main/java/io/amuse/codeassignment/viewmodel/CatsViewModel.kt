@@ -3,8 +3,8 @@ package io.amuse.codeassignment.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.amuse.codeassignment.domain.model.CatModel
 import io.amuse.codeassignment.repository.api.CatsRepository
+import io.amuse.codeassignment.repository.model.CatViewDataModel
 import io.amuse.codeassignment.ui.DataState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -21,7 +21,7 @@ class CatsViewModel @Inject constructor(
         getCats()
     }
 
-    private val _state: MutableStateFlow<DataState<List<CatModel>>> = MutableStateFlow(DataState.Loading)
+    private val _state: MutableStateFlow<DataState<List<CatViewDataModel>>> = MutableStateFlow(DataState.Loading)
     val state = _state.stateIn(
         viewModelScope,
         WhileSubscribed(500),
