@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">CodeAssignment</string>
+
+    <string name="default_error">Something went wrong!</string>
+    <string name="client_request_error">Client side error</string>
+    <string name="server_request_error">Server side error</string>
+    <string name="redirect_response">Redirection to another resource</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+
+    <string name="retry_button">Retry</string>
+
+    <!-- Content description -->
+    <string name="cat_image_cd">Cat image</string>
 </resources>
