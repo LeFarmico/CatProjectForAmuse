@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.amuse.codeassignment.R
-import io.amuse.codeassignment.repository.model.CatViewDataModel
 import io.amuse.codeassignment.ui.theme.EvenRowColor
 import io.amuse.codeassignment.ui.theme.OddRowColor
 import io.amuse.codeassignment.utils.InternetStatus
 import io.amuse.codeassignment.utils.internetState
+import io.amuse.codeassignment.viewmodel.CatScreenState
 import io.amuse.codeassignment.viewmodel.CatsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -60,8 +60,8 @@ fun CatsScreen(
                 CircularProgressIndicator()
             }
             is DataState.Success -> {
-                val catsList = (state as DataState.Success<List<CatViewDataModel>>).data
-                CatsContent(catsList = catsList)
+                val screenState = (state as DataState.Success<CatScreenState>).data
+                CatsContent(screenState = screenState)
             }
         }
     }
@@ -103,16 +103,28 @@ fun NoInternetState(modifier: Modifier = Modifier) {
 @Composable
 fun CatsContent(
     modifier: Modifier = Modifier,
-    catsList: List<CatViewDataModel>
+    screenState: CatScreenState
 ) {
-    LazyColumn(
-        modifier = modifier
-            .wrapContentWidth()
-            .fillMaxHeight()
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        itemsIndexed(catsList) { index, item ->
-            val color = if (index % 2 == 0) OddRowColor else EvenRowColor
-            CatItem(modifier = Modifier.background(color), catModel = item)
+        // Cats count
+        if (screenState.catsCount != null) {
+            Text(text = "Total cats count: " + screenState.catsCount.toString())
+            Text(text = "Loaded cats: " + screenState.loadedCatsCount.toString())
+        }
+
+        // List of cats
+        LazyColumn(
+            modifier = Modifier
+                .wrapContentWidth()
+                .fillMaxHeight()
+        ) {
+            itemsIndexed(screenState.catsList) { index, item ->
+                val color = if (index % 2 == 0) OddRowColor else EvenRowColor
+                CatItem(modifier = Modifier.background(color), catModel = item)
+            }
         }
     }
 }
