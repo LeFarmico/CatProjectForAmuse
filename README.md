@@ -95,4 +95,41 @@ DataState is a sealed class that contains three states:
 * The DataFlow is designed to work independently from each other. Every DataFlow layer has no dependencies on each other.
 * In this Application, the **Repository** doesn't handle ```NetworkResponse``` to ```DataState```. **ViewModel** does.
 
+## UI
+
+CatProject uses compose as a representation of View. ViewModel shares the ```DataState``` with the ```CatScreen``` composable function.
+
+```CatScreen``` composable function uses DataState to show different views such as:
+
+* Success
+* Loading
+* Error
+* Internet connectivity state (doesn't depends on DataState)
+
+<h1 align="center">UI | Error | LazyColumnError | NoInternet</h1>
+
+<p align="center">
+<img src="previews/Success.jpg" width=22% height=22%>
+<img src="previews/Error.jpg" width=22% height=22%>
+<img src="previews/LazyColumnError.jpg" width=22% height=22%>
+<img src="previews/NoInternet.jpg" width=22% height=22%>
+</p>
+
+```
+Copyright 2022 LeFarmico (Artsiom Zharnikovich)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+
 
