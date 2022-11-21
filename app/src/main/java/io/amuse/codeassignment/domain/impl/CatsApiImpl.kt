@@ -18,9 +18,9 @@ class CatsApiImpl @Inject constructor(private val client: HttpClient) : CatsApi 
 
     override suspend fun getJpegCat(): NetworkResponse<CatModel> {
         val timeout: Long = 10_000
-        return try {
-            // stopping of recursion in case of impossibility to find correct mimetype
-            withTimeout(timeout) {
+        // stopping of recursion in case of impossibility to find correct mimetype
+        return withTimeout(timeout) {
+            try {
                 val response = client.get(CatsURL.URL_JSON)
 
                 // filter by mimetype, if it is not image/jpeg then trying to get another cat
@@ -29,21 +29,21 @@ class CatsApiImpl @Inject constructor(private val client: HttpClient) : CatsApi 
                 } else {
                     getJpegCat()
                 }
-            }
-        } catch (e: ResponseException) {
-            NetworkResponse.Error(
-                code = e.response.status.value,
-                message = e.message,
-                throwable = e
-            )
-        } catch (e: UnresolvedAddressException) {
-            NetworkResponse.Exception(e)
-        } catch (e: CancellationException) {
-            NetworkResponse.Exception(
-                CancellationException(
-                    "Cats with mimetype: image/jpeg haven't found for $timeout millis"
+            } catch (e: ResponseException) {
+                NetworkResponse.Error(
+                    code = e.response.status.value,
+                    message = e.message,
+                    throwable = e
                 )
-            )
+            } catch (e: UnresolvedAddressException) {
+                NetworkResponse.Exception(e)
+            } catch (e: CancellationException) {
+                NetworkResponse.Exception(
+                    CancellationException(
+                        "Cats with mimetype: image/jpeg haven't found for $timeout millis"
+                    )
+                )
+            }
         }
     }
 
