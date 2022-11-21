@@ -2,6 +2,8 @@ package io.amuse.codeassignment.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.amuse.codeassignment.repository.api.CatsRepository
 import io.amuse.codeassignment.repository.model.CatViewDataModel
@@ -13,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CatScreenState(
-    val catsList: List<CatViewDataModel> = emptyList(),
+    val catsList: Flow<PagingData<CatViewDataModel>>? = null,
     val catsCount: Int? = null,
     val loadedCatsCount: Int? = null
 )
@@ -24,7 +26,29 @@ class CatsViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        getCats()
+        getState()
+    }
+
+    fun getState() {
+        viewModelScope.launch {
+            // better to handle each exception
+            try {
+                // possible to make it concurrent, but now it is useless
+                val catsCount = getCatsCount()
+                val pagingCatsFlow = getPagingCatsFlow()
+
+                _state.value = DataState.Success(
+                    getCatScreenState().copy(
+                        catsList = pagingCatsFlow,
+                        catsCount = catsCount,
+                        loadedCatsCount = 10
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.value = DataState.Error(e.message)
+            }
+        }
     }
 
     private val _state: MutableStateFlow<DataState<CatScreenState>> = MutableStateFlow(DataState.Loading)
@@ -34,32 +58,16 @@ class CatsViewModel @Inject constructor(
         DataState.Loading
     )
 
-    fun getCats() {
-        viewModelScope.launch {
-            catsRepository.fetchCats(
-                onStart = { _state.value = DataState.Loading },
-                onError = { _state.value = DataState.Error(it) }
-            )
-                .flowOn(Dispatchers.IO)
-                .collectLatest {
-                    // sequential request after collecting cats
-                    val catsCount = getCatsCount()
-
-                    _state.value = DataState.Success(
-                        getCatScreenState().copy(
-                            catsList = it,
-                            catsCount = catsCount,
-                            loadedCatsCount = it.size
-                        )
-                    )
-                }
-        }
+    private suspend fun getPagingCatsFlow(): Flow<PagingData<CatViewDataModel>> {
+        return catsRepository.fetchPagingCats(
+            onError = { _state.value = DataState.Error(it) }
+        ).cachedIn(viewModelScope)
     }
 
-    // can't make concurrent request because of crash application (unexpected NPE)
     private suspend fun getCatsCount(): Int {
-        return catsRepository.fetchCatsCount()
-            .flowOn(Dispatchers.IO)
+        return catsRepository.fetchCatsCount(
+            onError = { _state.value = DataState.Error(it) }
+        ).flowOn(Dispatchers.IO)
             .first()
     }
 
