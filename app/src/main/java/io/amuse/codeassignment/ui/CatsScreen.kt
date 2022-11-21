@@ -3,6 +3,7 @@ package io.amuse.codeassignment.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -127,8 +128,12 @@ fun CatsContent(
     screenState: CatScreenState
 ) {
 
+    // controlling lazy list state to get access to items data
+    val lazyListState = rememberLazyListState()
+
     val catsList = screenState.catsList?.collectAsLazyPagingItems()
     var loadedCatsCount by remember { mutableStateOf(screenState.loadedCatsCount) }
+    val shownCatNumber by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -136,11 +141,14 @@ fun CatsContent(
     ) {
         // Cats count
         if (screenState.catsCount != null) {
-            Text(text = "Total cats count: " + screenState.catsCount.toString())
+            Text(text = "Total cats count: ${screenState.catsCount}")
         }
+        // Loaded cats count
         if (loadedCatsCount != null) {
-            Text(text = "Loaded cats: " + loadedCatsCount.toString())
+            Text(text = "Loaded cats: $loadedCatsCount")
         }
+        // Last visible cat number
+        Text(text = "Shown cat number: $shownCatNumber")
 
         if (catsList == null) return
 
@@ -148,7 +156,8 @@ fun CatsContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxHeight()
-                .wrapContentWidth()
+                .wrapContentWidth(),
+            state = lazyListState
         ) {
             itemsIndexed(catsList) { index, catItem ->
                 val color = if (index % 2 == 0) OddRowColor else EvenRowColor
@@ -169,7 +178,13 @@ fun CatsContent(
                         }
                     }
                     loadState.append is LoadState.Error -> {
-                        item { Text(text = "Error") }
+                        item {
+                            ErrorState(
+                                message = "Next Page Load Error",
+                                isInternetAvailable = true,
+                                onClick = { refresh() }
+                            )
+                        }
                     }
                     // first time response page is loading
                     loadState.refresh is LoadState.Loading -> {
@@ -181,7 +196,13 @@ fun CatsContent(
                     }
                     // first time response page is error
                     loadState.refresh is LoadState.Error -> {
-                        item { Text(text = "Error") }
+                        item {
+                            ErrorState(
+                                message = "Cats Load Error",
+                                isInternetAvailable = true,
+                                onClick = { refresh() }
+                            )
+                        }
                     }
                 }
             }
