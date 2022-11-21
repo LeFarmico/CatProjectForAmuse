@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import io.amuse.codeassignment.R
+import io.amuse.codeassignment.repository.model.CatViewDataModel
 import io.amuse.codeassignment.ui.theme.EvenRowColor
 import io.amuse.codeassignment.ui.theme.OddRowColor
 import io.amuse.codeassignment.utils.InternetStatus
@@ -64,7 +66,10 @@ fun CatsScreen(
             }
             is DataState.Success -> {
                 val screenState = (state as DataState.Success<CatScreenState>).data
-                CatsContent(screenState = screenState)
+                CatsContent(
+                    catsPagingFlow = screenState.catsList?.collectAsLazyPagingItems(),
+                    catsCount = screenState.catsCount
+                )
             }
         }
     }
@@ -104,7 +109,7 @@ fun NoInternetState(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoadingState(
+fun LoadState(
     modifier: Modifier = Modifier,
     loadingMessage: String? = null
 ) {
@@ -125,14 +130,14 @@ fun LoadingState(
 @Composable
 fun CatsContent(
     modifier: Modifier = Modifier,
-    screenState: CatScreenState
+    catsPagingFlow: LazyPagingItems<CatViewDataModel>?,
+    catsCount: Int?
 ) {
 
     // controlling lazy list state to get access to items data
     val lazyListState = rememberLazyListState()
 
-    val catsList = screenState.catsList?.collectAsLazyPagingItems()
-    var loadedCatsCount by remember { mutableStateOf(screenState.loadedCatsCount) }
+    var loadedCatsCount by remember { mutableStateOf<Int?>(null) }
     val shownCatNumber by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     Column(
@@ -140,8 +145,8 @@ fun CatsContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Cats count
-        if (screenState.catsCount != null) {
-            Text(text = "Total cats count: ${screenState.catsCount}")
+        if (catsCount != null) {
+            Text(text = "Total cats count: $catsCount")
         }
         // Loaded cats count
         if (loadedCatsCount != null) {
@@ -150,7 +155,8 @@ fun CatsContent(
         // Last visible cat number
         Text(text = "Shown cat number: $shownCatNumber")
 
-        if (catsList == null) return
+        // Not showing cats list while it is not loaded
+        if (catsPagingFlow == null) return
 
         // List of cats
         LazyColumn(
@@ -159,12 +165,12 @@ fun CatsContent(
                 .wrapContentWidth(),
             state = lazyListState
         ) {
-            itemsIndexed(catsList) { index, catItem ->
+            itemsIndexed(catsPagingFlow) { index, catItem ->
                 val color = if (index % 2 == 0) OddRowColor else EvenRowColor
                 CatItem(modifier = Modifier.background(color), catModel = catItem!!)
             }
 
-            catsList.apply {
+            catsPagingFlow.apply {
 
                 loadedCatsCount = itemCount
 
@@ -172,7 +178,7 @@ fun CatsContent(
                     // next response page is loading
                     loadState.append is LoadState.Loading -> {
                         item {
-                            LoadingState(
+                            LoadState(
                                 loadingMessage = "Next page Loading"
                             )
                         }
@@ -189,7 +195,7 @@ fun CatsContent(
                     // first time response page is loading
                     loadState.refresh is LoadState.Loading -> {
                         item {
-                            LoadingState(
+                            LoadState(
                                 loadingMessage = "Image Loading"
                             )
                         }
