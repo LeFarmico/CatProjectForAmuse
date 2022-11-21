@@ -17,7 +17,6 @@ import javax.inject.Inject
 data class CatScreenState(
     val catsList: Flow<PagingData<CatViewDataModel>>? = null,
     val catsCount: Int? = null,
-    val loadedCatsCount: Int? = null
 )
 
 @HiltViewModel
@@ -30,7 +29,7 @@ class CatsViewModel @Inject constructor(
     }
 
     fun getState() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             // better to handle each exception
             try {
                 // possible to make it concurrent, but now it is useless
