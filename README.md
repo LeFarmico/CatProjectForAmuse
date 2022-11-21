@@ -1,42 +1,98 @@
-# Work assignment
+<h1 align="center">CatProject</h1>
 
-## Description
+<p align="center">
+  <a href="https://android-arsenal.com/api?level=21"><img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat"/></a>
+  <a href="https://github.com/LeFarmico"><img alt="Profile" src="https://img.shields.io/badge/github-LeFarmico-yellow"/></a>
+  <a href="https://www.linkedin.com/in/artsiom-zharnikovich-46726b1b5/"><img alt="Profile" src="https://img.shields.io/badge/linkedIn-Artsiom%20Zharnikovch-blue"/></a>
 
-Build a simple application that fetches cats from the fantastic cats as a service, ehm service.
-https://cataas.com/#/
-that is able to do some data filtering, some image manipulation and make use of some jetpack compose
-ui features. We have setup the base boilerplate for the application. What is needed is to fill in
-the missing pieces, described below.
+</p>
 
-**WARNING** The current example takes some time before anything shows up on screen
+CatProject is a simple Test Application that uses [Cat as a service](https://cataas.com/#/) API to represent cats on the screen. You can check the work assignment to see all the tasks that have to be solved.
 
-## Dependencies
+[Work assignment](documentation/Requirements.md)
 
-Ktor - https://ktor.io/docs/getting-started-ktor-client.html
-Jetpack Compose - https://developer.android.com/jetpack/compose
-kotlinx.serialization - https://github.com/Kotlin/kotlinx.serialization
-Coroutines - https://kotlinlang.org/docs/coroutines-overview.html
-Coil-Kt - https://coil-kt.github.io/coil/compose/
+## Download
 
-These dependencies are already in the example project.
+Latest version: [Link to the app]()
 
-## Task
+## Tech stack
 
-Currently the app is built with a very barebones MVVM/Coroutines Flow/Jetpack Compose setup. Keeping
-the architecture like it is, is fine. If you have time/want to show off some extra skills, feel free
-to add any frameworks/features you would like.
+- [Kotlin](https://kotlinlang.org/) main language.
+- [Coroutines/Flow](https://kotlinlang.org/docs/coroutines-overview.html) for asynchronous.
+- Android Architecture Components.
+  - MVVM Architecture (Model - View - ViewModel).
+  - Repository Pattern.
+  - View Binding.
+- [Dagger Hilt](https://dagger.dev/hilt/) for dependency injection.
+- [Jetpack Compose](https://developer.android.com/jetpack/compose) as view representation
+- [Paging Compose](https://developer.android.com/jetpack/androidx/releases/paging) for pagination
+- [Ktor](https://ktor.io/) for http requests
+- Features:
+  - LazyColumn
+  - Pagination
+  - StateFlow
+  - [Gradle](https://gradle.org/) by using [Kotlin](https://kotlinlang.org/) language.  
+  - Unit tests
 
-1. Instead of printing out the url to a cat as a text, we would rather much make use of coil-kt and
-   instead draw a picture of a cat. The dimensions of the image can be set to 100x100 dp.
-2. Great! We now draw cats, however, we would like every cat picture to have rounded corners, by 8dp
-3. Great! We would however want to only draw cats that are of mimetype "image/jpeg" and also print a
-   text to the right of the picture telling us when the cat was created!
-4. We want to make it easier for the user of the application to differentiate rows, by making so
-   that every cat item alternates between being colored with #000000 and #808080
-5. Come up with a way to fetch new cats for the user of the application, in a way that is easy to
-   use and easy to understand.
-6. It currently takes some time before any results are shown in the application, make use of
-   DataUIStateWrapper to display a loading spinner in CatsScreen.kt until the cats have been fetched
-   from the cats endpoint. This data is available in catsState.
-7. (Optional) Tell the user how many cats have currently been fetched out of the maximum amount of
-   cats that should be fetched
+## Architecture
+The app is based on the MVVM architecture pattern and the Repository pattern, which is recommended by Google.
+
+CatsProject by following the MVVM pattern consists of the three layers:
+
+* UI Layer
+* Presentation Layer
+* Data Layer
+
+<img src="previews/Arch.png" width=85% height=85%>
+
+### MVVM
+
+The data flow consists of a few steps:
+
+1. Initial state => ViewModel.
+2. ViewModel shares to View by Flow.
+3. View binds data and represents it in a view.
+4. After an event happens in a View (such as a button click), View sends this event to ViewModel (calling a function).
+5. ViewModel updates the current Model.
+6. Updated Model returns to ViewModel (Flow updates the state).
+7. And then we back to step 2.
+
+<img src="previews/MVVM.png">
+
+<img src="previews/DataFlow.png" align="right" width="320">
+
+## DataFlow
+
+### DataModel
+
+In this application were used two types of DataModel:
+
+* ```CatMode```l represents network responses.
+* ```CatViewDataModel``` represents repository returns (contains only the data that have to be shown)
+
+### NetworkResponse
+
+In cases of errors on the server side and exceptions on the client, NetworkResponse was used as a handler. Every http request has to be handled by ```NetworkResponse``` to prevent unexpected errors.
+
+NetworkResponse is a sealed class that contains three states:
+
+* ```NetworkResponse.Success(data)``` - in cases of successful requests.
+* ```NetworkResponse.Exception(throwable)``` - in cases of an exception on the client side.
+* ```NetworkResponse.Error(code, message, throwable)``` - in cases of an error on the server side
+
+### DataState
+
+```DataState``` It is used as the base representation of the screen such as Loading or Error.
+
+DataState is a sealed class that contains three states:
+
+* ```DataState.Loading``` - represents the Loading state of the screen.
+* ```DataState.Error``` - represents the Error state of the screen. 
+* ```DataState.Success``` - represents the Succes state that contains data
+
+### DataFlow
+
+* The DataFlow is designed to work independently from each other. Every DataFlow layer has no dependencies on each other.
+* In this Application, the **Repository** doesn't handle ```NetworkResponse``` to ```DataState```. **ViewModel** does.
+
+
