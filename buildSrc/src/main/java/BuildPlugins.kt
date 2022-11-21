@@ -45,6 +45,9 @@ object Deps {
     const val hilt = "com.google.dagger:hilt-android:$hilt_version"
     const val hiltCompiler = "com.google.dagger:hilt-android-compiler:$hilt_version"
     const val hiltCompose = "androidx.hilt:hilt-navigation-compose:1.0.0"
+
+    // Jetpack Paging
+    const val pagingCompose = "androidx.paging:paging-compose:1.0.0-alpha17"
 }
 
 object Versions {

@@ -87,4 +87,7 @@ dependencies {
     implementation(Deps.hilt)
     kapt(Deps.hiltCompiler)
     implementation(Deps.hiltCompose)
+
+    // Paging
+    implementation(Deps.pagingCompose)
 }
