@@ -13,7 +13,7 @@ CatProject is a simple Test Application that uses [Cat as a service](https://cat
 
 ## Download
 
-Latest version: [Link to the app]()
+Latest version: [CatProject](https://github.com/LeFarmico/CatProjectForAmuse/releases/tag/1.0.0)
 
 ## Tech stack
 
