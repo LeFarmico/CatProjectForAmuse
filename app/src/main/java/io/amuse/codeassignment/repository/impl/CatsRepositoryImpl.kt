@@ -59,12 +59,4 @@ class CatsRepositoryImpl @Inject constructor(
                 onError(it.message)
             }
     }
-
-    private fun String.dateTimeToViewData(): String? {
-        return try {
-            this.removeRange(10, this.length)
-        } catch (e: IndexOutOfBoundsException) {
-            null
-        }
-    }
 }

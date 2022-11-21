@@ -72,6 +72,11 @@ dependencies {
     androidTestImplementation(Deps.junitExt)
     androidTestImplementation(Deps.espresso)
     androidTestImplementation(Deps.composeUITestJunit)
+    androidTestImplementation(Deps.coroutineTest)
+    testImplementation(Deps.coroutineTest)
+    testImplementation(Deps.mockitoCore)
+    testImplementation(Deps.mockitoKotlin)
+    testImplementation(Deps.coreTesting)
 
     // Ktor
     implementation(Deps.ktorClientCore)
