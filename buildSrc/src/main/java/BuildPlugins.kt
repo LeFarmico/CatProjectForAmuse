@@ -30,6 +30,10 @@ object Deps {
     const val junitExt = "androidx.test.ext:junit:1.1.4"
     const val espresso = "androidx.test.espresso:espresso-core:3.5.0"
     const val composeUITestJunit = "androidx.compose.ui:ui-test-junit4:$compose_version"
+    const val coroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    const val mockitoCore = "org.mockito:mockito-core:4.0.0"
+    const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    const val coreTesting = "androidx.arch.core:core-testing:2.1.0"
 
     // Ktor
     const val ktorClientCore = "io.ktor:ktor-client-core:$ktor_version"
