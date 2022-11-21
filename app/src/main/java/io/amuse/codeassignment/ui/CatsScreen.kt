@@ -3,7 +3,6 @@ package io.amuse.codeassignment.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -12,6 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import io.amuse.codeassignment.R
 import io.amuse.codeassignment.ui.theme.EvenRowColor
 import io.amuse.codeassignment.ui.theme.OddRowColor
@@ -53,7 +55,7 @@ fun CatsScreen(
                 ErrorState(
                     message = (state as DataState.Error).message,
                     isInternetAvailable = isInternetAvailable,
-                    onClick = { viewModel.getCats() }
+                    onClick = { viewModel.getState() }
                 )
             }
             DataState.Loading -> {
@@ -101,10 +103,32 @@ fun NoInternetState(modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun LoadingState(
+    modifier: Modifier = Modifier,
+    loadingMessage: String? = null
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
+            if (loadingMessage == null) return
+            Text(text = loadingMessage)
+        }
+    }
+}
+
+@Composable
 fun CatsContent(
     modifier: Modifier = Modifier,
     screenState: CatScreenState
 ) {
+
+    val catsList = screenState.catsList?.collectAsLazyPagingItems()
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -115,15 +139,45 @@ fun CatsContent(
             Text(text = "Loaded cats: " + screenState.loadedCatsCount.toString())
         }
 
+        if (catsList == null) return
+
         // List of cats
         LazyColumn(
             modifier = Modifier
-                .wrapContentWidth()
                 .fillMaxHeight()
+                .wrapContentWidth()
         ) {
-            itemsIndexed(screenState.catsList) { index, item ->
+            itemsIndexed(catsList) { index, catItem ->
                 val color = if (index % 2 == 0) OddRowColor else EvenRowColor
-                CatItem(modifier = Modifier.background(color), catModel = item)
+                CatItem(modifier = Modifier.background(color), catModel = catItem!!)
+            }
+
+            catsList.apply {
+                when {
+                    // next response page is loading
+                    loadState.append is LoadState.Loading -> {
+                        item {
+                            LoadingState(
+                                loadingMessage = "Next page Loading"
+                            )
+                        }
+                    }
+                    loadState.append is LoadState.Error -> {
+                        item { Text(text = "Error") }
+                    }
+                    // first time response page is loading
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            LoadingState(
+                                loadingMessage = "Image Loading"
+                            )
+                        }
+                    }
+                    // first time response page is error
+                    loadState.refresh is LoadState.Error -> {
+                        item { Text(text = "Error") }
+                    }
+                }
             }
         }
     }
