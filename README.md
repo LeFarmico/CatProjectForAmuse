@@ -115,6 +115,7 @@ CatProject uses compose as a representation of View. ViewModel shares the ```Dat
 <img src="previews/NoInternet.jpg" width=22% height=22%>
 </p>
 
+# License
 ```
 Copyright 2022 LeFarmico (Artsiom Zharnikovich)
 
