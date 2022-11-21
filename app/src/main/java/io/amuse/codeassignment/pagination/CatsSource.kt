@@ -27,7 +27,7 @@ class CatsSource(
 
             val context = Dispatchers.IO + Job()
             val scope = CoroutineScope(context)
-            val cats = (0..50).map {
+            val cats = (0..19).map {
                 scope.async {
                     when (val networkResponse = api.getJpegCat()) {
                         is NetworkResponse.Error -> throw (networkResponse.throwable) // handle API request errors

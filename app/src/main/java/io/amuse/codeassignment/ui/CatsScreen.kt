@@ -128,6 +128,7 @@ fun CatsContent(
 ) {
 
     val catsList = screenState.catsList?.collectAsLazyPagingItems()
+    var loadedCatsCount by remember { mutableStateOf(screenState.loadedCatsCount) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -136,7 +137,9 @@ fun CatsContent(
         // Cats count
         if (screenState.catsCount != null) {
             Text(text = "Total cats count: " + screenState.catsCount.toString())
-            Text(text = "Loaded cats: " + screenState.loadedCatsCount.toString())
+        }
+        if (loadedCatsCount != null) {
+            Text(text = "Loaded cats: " + loadedCatsCount.toString())
         }
 
         if (catsList == null) return
@@ -153,6 +156,9 @@ fun CatsContent(
             }
 
             catsList.apply {
+
+                loadedCatsCount = itemCount
+
                 when {
                     // next response page is loading
                     loadState.append is LoadState.Loading -> {

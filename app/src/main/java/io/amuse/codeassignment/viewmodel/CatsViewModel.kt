@@ -40,8 +40,7 @@ class CatsViewModel @Inject constructor(
                 _state.value = DataState.Success(
                     getCatScreenState().copy(
                         catsList = pagingCatsFlow,
-                        catsCount = catsCount,
-                        loadedCatsCount = 10
+                        catsCount = catsCount
                     )
                 )
             } catch (e: Exception) {
